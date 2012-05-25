@@ -9,11 +9,6 @@ if(isset($_SESSION["admin"]) and $_SESSION["admin"] == true)
 		$_POST["title"] = bengine_chars($_POST["title"]);
 		$_POST["text"] = bengine_chars_mysql(trim($_POST["text"]));
 		
-		if(isset($_POST["nl2br"]) and $_POST["nl2br"] == 1) {
-			$_POST["text"] = nl2br($_POST["text"]);
-		} else {
-			$_POST["nl2br"] = 0;
-		}
 		if(add_post("action", $_POST) != true) {
 			die("При добавлении блока возникла ошибка");
 		}
@@ -30,12 +25,6 @@ if(isset($_SESSION["admin"]) and $_SESSION["admin"] == true)
 	{
 		$_POST["title"] = bengine_chars($_POST["title"]);
 		$_POST["text"] = bengine_chars_mysql(trim($_POST["text"]));
-		
-		if(isset($_POST["nl2br"]) and $_POST["nl2br"] == 1) {
-			$_POST["text"] = nl2br($_POST["text"]);
-		} else {
-			$_POST["nl2br"] = 0;
-		}
 		
 		if(edit_post("action", $_POST, $nodes[3]) != true) {
 			die("При редактировании блока возникли ошибки");

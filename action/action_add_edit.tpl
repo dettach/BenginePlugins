@@ -1,3 +1,5 @@
+<?php include_once(ROOT_DIR."/system/template/tinymce_br.tpl"); ?>
+
 <form action="#" method="post">
 <fieldset>
 	<legend><?php if($nodes[2] == "add"){echo 'Создание';}else{echo 'Редактирование';}?> статического блока:</legend>
@@ -24,18 +26,16 @@
 		<br />
 		
 		<label>Изображение:</label> <input type="text" name="image" id="image" value="<?php if(isset($content["image"])) {echo $content["image"];} ?>" maxlength="200" />
-		<a href="javascript:BengineBrowser('image')"><img src="/system/template/img/view.png" class="addImg"></a>
+		<a href="#" onclick="elFinderBrowser('image', '<?php if(isset($content["image"])) {echo $content["image"];} ?>', 'image', window);"><img src="/system/template/img/view.png" class="addImg"></a>
 		<br />
 		
 		<label>Файл:</label> <input type="text" name="file" id="file" value="<?php if(isset($content["file"])) {echo $content["file"];} ?>" maxlength="200" />
-		<a href="javascript:BengineBrowser('file')"><img src="/system/template/img/view.png" class="addImg"></a>
+		<a href="#" onclick="elFinderBrowser('file', '<?php if(isset($content["file"])) {echo $content["file"];} ?>', 'file', window);"><img src="/system/template/img/view.png" class="addImg"></a>
 		<br />
 		
-		<label>Содержание:</label>
+		<label>Содержание: <br /><a class="btn" href="javascript:;" onclick="tinymce.execCommand('mceToggleEditor',false,'text');"><span>Отключить TinyMCE</span></a></label>
 		<textarea name="text" style="width: 80%; height: 320px;"><?php if(isset($content["text"])) {echo $content["text"];} ?></textarea>
 		<br />
-		
-		<label>Автомат. перенос строк:</label> <input type="checkbox" class="checkbox" name="nl2br" value="1" <?php if(isset($content["nl2br"]) and $content["nl2br"] == 1) {echo 'checked="checked"';} ?>><br />
 		
 	</fieldset>
 	
