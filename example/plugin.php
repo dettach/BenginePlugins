@@ -15,24 +15,22 @@ if(isset($nodes[1]) and (int)$nodes[1] > 0) {
 
 # Смотрим список всех записей
 else
-{
+{	
+	# Определяем сортировку
+	if(isset($plugin_config["order"]) and $plugin_config["order"] == true) {
+		$order = "DESC";
+	} else {
+		$order = "";
+	}
 	# Навигация по плагину
 	if(isset($plugin_config["limit"]) and $plugin_config["limit"] != 0) {	
-		$nav = donav($plugin_config["limit"], $pl, false, $p);
+		$nav = donav($plugin_config["limit"], $pl, "page='".$page["id"]."'", $p);
 		$navigation = "LIMIT ".$nav["start"].",".$nav["num"];
 	} else {
 		$navigation = "";
 	}
-	
-	# Определяем сортировку
-	if(isset($plugin_config["order"]) and $plugin_config["order"] == true) {
-		$order = "order";
-	} else {
-		$order = "id";
-	}
-	
 	# Запрашиваем весь массив данных
-	$sql = doquery("SELECT * FROM ".$pl." WHERE page='".$page["id"]."' ORDER BY `".$order."` DESC ".$navigation);
+	$sql = doquery("SELECT * FROM ".$pl." WHERE page='".$page["id"]."' ORDER BY `".$plugin_config["sort"]."` ".$order." ".$navigation);
 	if(dorows($sql) > 0) {
 		$content = doarray($sql);
 	}
