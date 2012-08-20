@@ -2,7 +2,8 @@
 $(document).ready(function(){
 	$(".click_menu").click(function(){
 		var rel = $(this).attr("rel");
-		$.post("/admin/<?php echo $pl; ?>/menu/"+rel+"/",function(data) {
+		$.post("/admin/<?php echo $pl; ?>/elements/<?php echo $nodes[3]; ?>/menu/"+rel+"/",function(data) {
+			alert(data);
 			$(".click_menu[rel="+rel+"]").attr("src","/system/template/img/menu_"+data+".png");
 		});
 		return false;
@@ -35,10 +36,10 @@ $(document).ready(function(){
 				echo '
 				<tr>
 					<td>
-						<a href="/admin/'.$pl.'/dn/'.$v["id"].'/" title="Переместить вверх"><img src="/system/template/img/up.png" /></a>
-						<a href="/admin/'.$pl.'/up/'.$v["id"].'/" title="Переместить вниз"><img src="/system/template/img/down.png" /></a>
+						<a href="/admin/'.$pl.'/elements/'.$nodes[3].'/dn/'.$v["id"].'/" title="Переместить вверх"><img src="/system/template/img/up.png" /></a>
+						<a href="/admin/'.$pl.'/elements/'.$nodes[3].'/up/'.$v["id"].'/" title="Переместить вниз"><img src="/system/template/img/down.png" /></a>
 						<img src="/system/template/img/menu_'.$v["menu"].'.png" class="click_menu" rel="'.$v["id"].'" title="Включить" />
-						<a href="/admin/'.$pl.'/elements/1/edit/'.$v["id"].'/" title="Редактировать данные">'.$v["title"].'</a>
+						<a href="/admin/'.$pl.'/elements/'.$nodes[3].'/edit/'.$v["id"].'/" title="Редактировать данные">'.$v["title"].'</a>
 					</td>
 					<td>'.$v["datetime"].'</td>';
 				if(isset($plugin_column[$pl]) and is_array($plugin_column[$pl])) {
@@ -50,8 +51,8 @@ $(document).ready(function(){
 				}
 				echo '
 					<td class="control">
-						<a href="/admin/'.$pl.'/delete/'.$v["id"].'/" onclick="return confirm(\'Вы уверенны, что хотите удалить: '.$v["title"].'?\'); return false;" title="Удалить данные"><img src="/system/template/img/delete.png" /></a>
-						<a href="/admin/'.$pl.'/edit/'.$v["id"].'/"><img src="/system/template/img/reply.png" title="Редактировать данные" /></a>
+						<a href="/admin/'.$pl.'/elements/'.$nodes[3].'/delete/'.$v["id"].'/" onclick="return confirm(\'Вы уверенны, что хотите удалить: '.$v["title"].'?\'); return false;" title="Удалить данные"><img src="/system/template/img/delete.png" /></a>
+						<a href="/admin/'.$pl.'/elements/'.$nodes[3].'/edit/'.$v["id"].'/"><img src="/system/template/img/reply.png" title="Редактировать данные" /></a>
 					</td>
 				</tr>
 				';

@@ -17,11 +17,7 @@ $(function(){
 	
 		<legend><?php if($nodes[2] == "add") {echo 'Добавление';} else {echo 'Редактирование';} ?> данных в "<?php echo $plugin_config["title"]; ?>"</legend>
 		
-		<label>Дата и время:</label>
-		<input type="text" name="datetime" value="<?php if(isset($content["datetime"])) { echo $content["datetime"]; } else {echo DATETIME;} ?>" maxlength="250" />
-		<br />
-		
-		<label>Заголовок:</label>
+		<label>Наименование/Заголовок:</label>
 		<input type="text" name="title" value="<?php if(isset($content["title"])) { echo $content["title"]; } ?>" maxlength="250" />
 		<br />
 		
@@ -125,7 +121,7 @@ $(function(){
 		<input type="hidden" name="header" value="<?php echo $plugin_config["header"]; ?>">
 		<input type="hidden" name="body" value="<?php echo $plugin_config["elements_body"]; ?>">
 		<input type="hidden" name="footer" value="<?php echo $plugin_config["footer"]; ?>">
-		
+		<input type="hidden" name="datetime" value="<?php echo DATETIME; ?>">	
 	</fieldset>
 	
 	<input type="submit" name="submit" class="button" value="Сохранить данные">

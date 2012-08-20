@@ -13,9 +13,20 @@ function structure($parent, $level = 1)
 				echo '
 				<tr>
 					<td style="padding-left: '.$padding_level.'px">
-						<a href="/admin/catalog/dn/'.$v["id"].'/" title="Переместить вверх"><img src="/system/template/img/up.png" /></a>
-						<a href="/admin/catalog/up/'.$v["id"].'/" title="Переместить вниз"><img src="/system/template/img/down.png" /></a>
+						<a href="/admin/catalog/up/'.$v["id"].'/" title="Переместить вверх"><img src="/system/template/img/up.png" /></a>
+						<a href="/admin/catalog/dn/'.$v["id"].'/" title="Переместить вниз"><img src="/system/template/img/down.png" /></a>
 						<img src="/system/template/img/menu_'.$v["menu"].'.png" class="click_menu" rel="'.$v["id"].'" title="Включить" />
+					';
+					
+					if($v["child"] > 0) {
+						if($v["showchild"] == 1) {
+							echo '<a href="/admin/catalog/showchild/'.$v["id"].'/0/" title="Скрыть внутренние страницы"><img src="/system/template/img/minimize.png" /></a>';
+						} else {
+							echo '<a href="/admin/catalog/showchild/'.$v["id"].'/1/" title="Просмотр внутренних страниц"><img src="/system/template/img/maximize.png" /></a>';
+						}
+					}
+					
+					echo '
 						<a href="/admin/catalog/add/'.$v["id"].'/"><img src="/system/template/img/addsmall.png" /></a>
 						<a href="/admin/catalog/elements/'.$v["id"].'/" title="Редактировать данные">'.$v["title"].'</a>
 					</td>
@@ -31,7 +42,9 @@ function structure($parent, $level = 1)
 				</tr>
 				';
 				if(isset($v["child"]) and $v["child"] > 0) {
-					structure($v["id"],$level+1);
+					if($v["showchild"] == 1) {
+						structure($v["id"],$level+1);
+					}
 				}
 			}
 		}
@@ -67,9 +80,20 @@ $(document).ready(function(){
 					echo '
 					<tr>
 						<td>
-							<a href="/admin/catalog/dn/'.$v["id"].'/" title="Переместить вверх"><img src="/system/template/img/up.png" /></a>
-							<a href="/admin/catalog/up/'.$v["id"].'/" title="Переместить вниз"><img src="/system/template/img/down.png" /></a>
+							<a href="/admin/catalog/up/'.$v["id"].'/" title="Переместить вверх"><img src="/system/template/img/up.png" /></a>
+							<a href="/admin/catalog/dn/'.$v["id"].'/" title="Переместить вниз"><img src="/system/template/img/down.png" /></a>
 							<img src="/system/template/img/menu_'.$v["menu"].'.png" class="click_menu" rel="'.$v["id"].'" title="Включить" />
+					';
+					
+					if($v["child"] > 0) {
+						if($v["showchild"] == 1) {
+							echo '<a href="/admin/catalog/showchild/'.$v["id"].'/0/" title="Скрыть внутренние страницы"><img src="/system/template/img/minimize.png" /></a>';
+						} else {
+							echo '<a href="/admin/catalog/showchild/'.$v["id"].'/1/" title="Просмотр внутренних страниц"><img src="/system/template/img/maximize.png" /></a>';
+						}
+					}
+					
+					echo '
 							<a href="/admin/catalog/add/'.$v["id"].'/"><img src="/system/template/img/addsmall.png" /></a>
 							<a href="/admin/catalog/elements/'.$v["id"].'/" title="Редактировать данные">'.$v["title"].'</a>
 						</td>
@@ -85,7 +109,9 @@ $(document).ready(function(){
 					</tr>
 					';
 					if(isset($v["child"]) and $v["child"] > 0) {
-						structure($v["id"]);
+						if($v["showchild"] == 1) {
+							structure($v["id"]);
+						}
 					}
 				}
 			}

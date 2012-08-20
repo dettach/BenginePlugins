@@ -55,7 +55,7 @@ $(function(){
 					# Выпадающий список
 					elseif($v["type"] == "select")
 					{
-						if($v["name"] != "parent" and $v["name"] != "child")
+						if($v["name"] != "parent" and $v["name"] != "child" and $v["name"] != "showchild")
 						{
 							echo '<label>'.$v["title"].':</label>';
 							if(isset($v["selectname"])) {
@@ -106,14 +106,17 @@ $(function(){
 					}
 					# Строка
 					else {
-						if(isset($v["defaultvar"]) and $v["defaultvar"] != "" and $column_content == "") {
-							$column_content = $v["defaultvar"];
+						if($v["name"] != "showchild")
+						{
+							if(isset($v["defaultvar"]) and $v["defaultvar"] != "" and $column_content == "") {
+								$column_content = $v["defaultvar"];
+							}
+							echo '<label>'.$v["title"].':</label> <input type="text" name="'.$v["name"].'" id="'.$v["name"].'" value="'.$column_content.'" maxlength="250" />';
+							if(isset($v["filebrowser"]) and $v["filebrowser"] == 1) {
+								echo '<a href="#" onclick="elFinderBrowser(\''.$v["name"].'\', \''.$column_content.'\', \'images\', window);"><img src="/system/template/img/view.png" class="addImg"></a>';
+							}
+							echo '<br />';
 						}
-						echo '<label>'.$v["title"].':</label> <input type="text" name="'.$v["name"].'" id="'.$v["name"].'" value="'.$column_content.'" maxlength="250" />';
-						if(isset($v["filebrowser"]) and $v["filebrowser"] == 1) {
-							echo '<a href="#" onclick="elFinderBrowser(\''.$v["name"].'\', \''.$column_content.'\', \'images\', window);"><img src="/system/template/img/view.png" class="addImg"></a>';
-						}
-						echo '<br />';
 					}
 				}
 			}
