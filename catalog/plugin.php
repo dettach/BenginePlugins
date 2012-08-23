@@ -11,15 +11,15 @@ if(isset($nodes[1]) and (int)$nodes[1] > 0)
 		$content = doassoc($sql);
 		
 		#Возможно есть родительский каталог
-		if(!empty($content["catalog"]["parent"]) > 0) {
-			$sql = doquery("SELECT * FROM catalog WHERE parent='".$content["parent"]."' LIMIT 1");
-			if(dorows($sql) > 0) {
+		if(!empty($content["parent"]) > 0) {
+			$sql = doquery("SELECT * FROM catalog WHERE id='".$content["parent"]."' LIMIT 1");
+			if(dorows($sql) == 1) {
 				$content["catalog_parent"] = doassoc($sql);
 			}
 		}
 		
 		#Список подкаталогов
-		if(!empty($content["catalog"]["child"]) > 0) {
+		if(!empty($content["child"]) > 0) {
 			$sql = doquery("SELECT * FROM catalog WHERE parent='".$content["id"]."' ORDER BY `order`");
 			if(dorows($sql) > 0) {
 				$content["catalog_child"] = doarray($sql);

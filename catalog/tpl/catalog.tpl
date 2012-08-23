@@ -3,7 +3,7 @@ function structure($parent, $level = 1)
 {
 	global $plugin;
 	$structure = array();
-	if(($sql_structure = doquery("SELECT `id`,`parent`,`child`,`menu`,`order`,`title` FROM `catalog` WHERE `parent`=".$parent." ORDER BY `order`")) != false)
+	if(($sql_structure = doquery("SELECT `id`,`parent`,`child`,`menu`,`order`,`title`,`showchild` FROM `catalog` WHERE `parent`=".$parent." ORDER BY `order`")) != false)
 	{
 		if(dorows($sql_structure) > 0) {
 			$structure = doarray($sql_structure);

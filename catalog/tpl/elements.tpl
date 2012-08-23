@@ -3,7 +3,6 @@ $(document).ready(function(){
 	$(".click_menu").click(function(){
 		var rel = $(this).attr("rel");
 		$.post("/admin/<?php echo $pl; ?>/elements/<?php echo $nodes[3]; ?>/menu/"+rel+"/",function(data) {
-			alert(data);
 			$(".click_menu[rel="+rel+"]").attr("src","/system/template/img/menu_"+data+".png");
 		});
 		return false;
