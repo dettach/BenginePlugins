@@ -114,7 +114,7 @@ if(isset($nodes[1]) and $nodes[1] == $pl)
 	{
 		if(isset($_POST["submit"])) {
 			if(isset($nodes[3]) and (int)$nodes[3] > 0) {
-				$_POST["page"] = $nodes[3];
+				$_POST["catalog"] = $nodes[3];
 			}
 			add("catalog_elements", $_POST, "page='".$nodes[3]."'");
 			cacheAdd("catalog_elements",$plugin_config);

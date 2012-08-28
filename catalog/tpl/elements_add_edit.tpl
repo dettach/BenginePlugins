@@ -118,6 +118,7 @@ $(function(){
 				}
 			}
 		?>
+		<textarea style="display:none;"></textarea>
 		<input type="hidden" name="header" value="<?php echo $plugin_config["header"]; ?>">
 		<input type="hidden" name="body" value="<?php echo $plugin_config["elements_body"]; ?>">
 		<input type="hidden" name="footer" value="<?php echo $plugin_config["footer"]; ?>">

@@ -6,7 +6,7 @@ $plugin_config["name"] = "catalog";
 $plugin_config["title"] = "Каталог";
 $plugin_config["extend"] = 0;
 $plugin_config["cache"] = 1;
-$plugin_config["limit"] = 10;
+$plugin_config["limit"] = 20;
 $plugin_config["sort"] = "order";
 $plugin_config["order"] = false;
 $plugin_config["header"] = "header.tpl";
@@ -72,7 +72,7 @@ $plugin_column["catalog_elements"][] = array(
 $plugin_column["catalog_elements"][] = array(
 	"name" => "proizvoditel",
 	"type" => "varchar",
-	"title" => "Материал",
+	"title" => "Производитель",
 	"default" => ""
 );
 $plugin_column["catalog_elements"][] = array(
