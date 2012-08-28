@@ -1,0 +1,1 @@
+<?phpif( !defined("BENGINE") ) { die ("Hacking!"); }# Шаблон раздела плагина$body = "/plugins/register/config.tpl";?>
