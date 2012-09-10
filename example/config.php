@@ -52,6 +52,7 @@ $plugin_config["footer"] = "footer.tpl";
 # visible - видимость столбца при просмотре списка данных в плагине админки (заголовок, дата, действия, свой вариант)
 # filebrowser - для колонки необходимо подключение к файловому обозревателю
 # selectname - при типе данных select поле показывает к какой таблице обращаться за данными
+# selecttitle - при типе данных select даннй параметр показывает, что поле selecttitle бедет видимо <option value="$v[id]">$v[selecttitle]</option>
 # defaultvar - php переменная для отображения по умолчанию, например $_SESSION["login"], где будет показан логин авторизованного пользователя
 
 # Если поле select, для выпадающего списка это может быть номер элемента или заголовок
@@ -78,12 +79,12 @@ $plugin_column["example"][] = array(
 	"filebrowser" => 1
 );
 $plugin_column["example"][] = array(
-	"name" => "file",
-	"type" => "char",
-	"title" => "Файл",
+	"name" => "name",
+	"type" => "varchar",
+	"title" => "Имя",
 	"default" => "",
 	"visible" => 0,
-	"filebrowser" => 1
+	"filebrowser" => 0
 );
 $plugin_column["example"][] = array(
 	"name" => "datepub",
@@ -108,6 +109,7 @@ $plugin_column["example"][] = array(
 	"title" => "Раздел страницы",
 	"default" => 0,
 	"selectname" => "pages",
+	"selecttitle" => "title",
 );
 $plugin_column["example"][] = array(
 	"name" => "anons",
