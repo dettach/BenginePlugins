@@ -242,7 +242,7 @@ class Krugozor_Pagination_Manager
      */
     public function getPreviousBlockSeparator()
     {
-        return $this->current_sep - 1 ? false : 0;
+        return $this->current_sep - 1 ? $this->current_sep - 1 : 0;
     }
 
     /**
@@ -355,7 +355,7 @@ class Krugozor_Pagination_Manager
      */
     public function getPreviousPage()
     {
-        return $this->current_page - 1 ? false : 0;
+        return $this->current_page - 1 ? $this->current_page - 1 : 0;
     }
 
     /**
@@ -378,6 +378,17 @@ class Krugozor_Pagination_Manager
     public function getNextPage()
     {
         return $this->current_page < $this->total_pages ? $this->current_page + 1 : 0;
+    }
+
+    /**
+     * Возвращает номер страницы для формирования ссылки (»»).
+     *
+     * @param void
+     * @return int
+     */
+    public function getPageForNextBlock()
+    {
+        return $this->current_page + count($this->table);
     }
 
     /**
