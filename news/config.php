@@ -1,7 +1,7 @@
 <?php
 
 $plugin_config = array();
-$plugin_config["admin"] = 0;
+$plugin_config["admin"] = 2;
 $plugin_config["name"] = "news";
 $plugin_config["title"] = "Новости";
 $plugin_config["extend"] = 0;

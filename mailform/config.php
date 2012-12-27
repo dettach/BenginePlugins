@@ -6,14 +6,14 @@
 	
 	$plugin_config["name"] = "mailform";
 	
-	$plugin_config["title"] = "Обработчик форм (отправка на e-mail)";
+	$plugin_config["title"] = "Отправка форм";
 	
 	$plugin_config["extend"] = 0;
 	
 	$plugin_config["cache"] = 0;
 
-	$plugin_config["send_mail_list"] = "camanru@ya.ru";
+	$plugin_config["send_mail_list"] = $cfg["email"];
 	
-	$plugin_config["title_mail_msg"] = "UniGenerator. Страница: ";
+	$plugin_config["title_mail_msg"] = "Собщение с сайта ".$cfg["url"].". ";
 	
 ?>

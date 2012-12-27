@@ -7,9 +7,9 @@ if(isset($nodes[1]) and (int)$nodes[1] > 0) {
 	if(dorows($sql)== 1) {
 		$content = doassoc($sql);
 		# Стандартные шаблоны для плагина берез из его конфигурации
-		if(isset($content["header"])){ $header = "/templates/".$cfg["template"]."/".$content["header"]; }
-		if(isset($content["body"]))  { $body = "/templates/".$cfg["template"]."/".$content["body"]; }
-		if(isset($content["footer"])){ $footer = "/templates/".$cfg["template"]."/".$content["footer"]; }
+		if(isset($content["header"])){ $header = "/template/".$content["header"]; }
+		if(isset($content["body"]))  { $body = "/template/".$content["body"]; }
+		if(isset($content["footer"])){ $footer = "/template/".$content["footer"]; }
 	}
 }
 

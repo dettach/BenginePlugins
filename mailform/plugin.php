@@ -18,7 +18,7 @@ if(isset($_POST["submit"]) and count($_POST) > 1)
 	$msg = str_replace($msgIn, $msgOu, $msg);
 	
 	# Отправляем и ждем результат
-	if(!bengine_mail($plugin_config["send_mail_list"], $plugin_config["title_mail_msg"].$page["title"], $msg)) {
+	if(!bengine_mail($plugin_config["send_mail_list"], $plugin_config["title_mail_msg"], $msg)) {
 		$result = "Ошибка отправки сообщения";
 	} else {
 		$result = 1;
