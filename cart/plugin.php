@@ -91,7 +91,7 @@ else
 		{
 			$sql = doquery("
 			SELECT
-				t1.count,t2.cost
+				t1.count,t2.catalog,t2.cost
 			FROM
 				cart AS t1 INNER JOIN catalog_elements AS t2 ON (t2.id = t1.element)
 			WHERE
@@ -102,7 +102,11 @@ else
 			$die = 0;
 			if(count($result = doarray($sql)) > 0) {
 				foreach($result as $v) {
-					$die = $die + ($v["count"] * $v["cost"]);
+					if($v["catalog"] == 282) {
+						$die = $die + ($v["count"] * ($v["cost"] * 1.2));
+					} else {
+						$die = $die + ($v["count"] * $v["cost"]);
+					}
 				}
 			}
 			$die = number_format($die,2,',',' ');
