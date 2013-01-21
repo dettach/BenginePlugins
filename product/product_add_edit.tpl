@@ -29,24 +29,6 @@ $(function(){
 		<input type="text" name="keywords" class="seo" value="<?php if(isset($content["keywords"])) { echo $content["keywords"]; } ?>" maxlength="250" />
 		<br class="seo" />
 		
-		<label>Категории:</label>
-		<select name="category[]" style="height: 80px;" multiple>
-		<?php
-			$category = cacheGet("category");
-			foreach($category as $v) {
-				if(isset($princat[$v["id"]]) and $princat[$v["id"]] == $v["id"]) {
-					echo '<option value="'.$v["id"].'" selected>'.$v["title"].'</option>';
-				} else {
-					echo '<option value="'.$v["id"].'">'.$v["title"].'</option>';
-				}
-			}
-		?>
-		</select>
-		<br />
-		<label></label>
-		<span>Категории выбираются через кнопку Ctrl + левая кнопка мыши</span>
-		<br /><br />
-		
 		<?php
 			# Смотрим  поля, которые были заданы в конфигурации
 			if(!empty($plugin_column["product"]))
@@ -84,6 +66,43 @@ $(function(){
 						}
 						echo '<input type="hidden" name="'.$v["name"].'" value="0" />';
 						echo '<label>'.$v["title"].':</label> <input type="checkbox" name="'.$v["name"].'" id="'.$v["name"].'" value="1" '.$checked.' />';
+					}
+					# Выпадающий список
+					elseif($v["type"] == "select") {
+						echo '<label>'.$v["title"].':</label>';
+						if(isset($v["selectname"])) {
+							if(cacheGet($v["selectname"]) == false) {
+								cacheAdd($v["selectname"]);
+							}
+							$select_cache = cacheGet($v["selectname"]);
+							echo '<select name="'.$v["name"].'">';
+							echo '<option value=""></option>';
+							if(is_array($select_cache))
+							{
+								if(!is_numeric($v["default"])) {
+									foreach($select_cache as $sk => $sv) {
+										if(isset($v["selecttitle"])) { $sv["title"] = $sv[$v["selecttitle"]]; }
+										if($column_content != '' and $column_content == $sv["title"]) {
+											echo '<option value="'.$sv[$v["default"]].'" selected="selected">'.$sv[$v["default"]].'</option>';
+										} else {
+											echo '<option value="'.$sv[$v["default"]].'">'.$sv[$v["default"]].'</option>';
+										}
+									}
+								} else {
+									foreach($select_cache as $sk => $sv) {
+										if(isset($v["selecttitle"])) { $sv["title"] = $sv[$v["selecttitle"]]; }
+										if($column_content != '' and $column_content == $sv["id"]) {
+											echo '<option value="'.$sv["id"].'" selected="selected">'.$sv["title"].'</option>';
+										} else {
+											echo '<option value="'.$sv["id"].'">'.$sv["title"].'</option>';
+										}
+									}
+								}
+							} else {
+								echo '<option value="'.$v["default"].'"></option>';
+							}
+							echo '</select><br />';
+						}
 					}
 					# Строка
 					else {

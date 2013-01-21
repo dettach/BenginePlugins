@@ -15,6 +15,15 @@ $plugin_config["footer"] = "footer.tpl";
 
 #Каждый товар в отдельности
 $plugin_column["product"][] = array(
+	"name" => "category",
+	"type" => "select",
+	"title" => "Категория",
+	"selectname" => "category",
+	"selecttitle" => "title",
+	"default" => 0,
+	"filebrowser" => 1
+);
+$plugin_column["product"][] = array(
 	"name" => "image",
 	"type" => "varchar",
 	"title" => "Изображение",
@@ -27,6 +36,12 @@ $plugin_column["product"][] = array(
 	"title" => "Артикул",
 	"default" => "",
 	"visible" => 1
+);
+$plugin_column["product"][] = array(
+	"name" => "price",
+	"type" => "varchar",
+	"title" => "Цена",
+	"default" => ""
 );
 $plugin_column["product"][] = array(
 	"name" => "oldprice",

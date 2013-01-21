@@ -12,22 +12,8 @@ if(isset($nodes[1]) and $nodes[1] == $pl)
 	{
 		if(isset($_POST["submit"])) 
 		{
-			$category = $_POST["category"];
-			unset($_POST["category"]);
 			add("product", $_POST);
 			cacheAdd("product",$plugin_config);
-			
-			#выбор нескольких категорий
-			$insert = "";
-			$lastid = dolast("product");
-			if(count($category) > 0) {
-				foreach($category as $v) {
-					$insert .= "(NULL,".$v.",".$lastid."),";
-				}
-				$insert = mb_substr($insert,0,-1);
-				doquery("INSERT INTO `pr_in_cat` (`id`, `category`, `product`) VALUES ".$insert." ");
-			}
-			
 			header("Location: /admin/product/");
 			die();
 		}
@@ -41,23 +27,8 @@ if(isset($nodes[1]) and $nodes[1] == $pl)
 		# Отправка в БД
 		if(isset($_POST["submit"]))
 		{
-			$category = $_POST["category"];
-			unset($_POST["category"]);
 			edit("product", $_POST, $nodes[3]);
 			cacheAdd("product",$plugin_config);
-			
-			#выбор нескольких категорий
-			$insert = "";
-			$lastid = dolast("product");
-			if(count($category) > 0) {
-				foreach($category as $v) {
-					$insert .= "(NULL,".$lastid.",".$v."),";
-				}
-				$insert = mb_substr($insert,0,-1);
-				doquery("DELETE FROM `pr_in_cat` WHERE `product`='".$nodes[3]."'");
-				doquery("INSERT INTO `pr_in_cat` (`id`, `product`, `category`) VALUES ".$insert." ");
-			}
-			
 			header("Location: /admin/product/edit/".$nodes[3]."/");
 			die();
 		}
@@ -65,15 +36,6 @@ if(isset($nodes[1]) and $nodes[1] == $pl)
 		$query_product = doquery("SELECT * FROM `product` WHERE `id`='".$nodes[3]."' LIMIT 1");
 		if(dorows($query_product) > 0) {
 			$content = doassoc($query_product);
-			
-			#Вытаскиваем несколько категорий
-			$sql_pr_in_cat = doquery("SELECT category FROM pr_in_cat WHERE product='".$content["id"]."'");
-			if(dorows($sql_pr_in_cat) > 0) {
-				$pr_in_cat = doarray($sql_pr_in_cat);
-				foreach($pr_in_cat as $v) {
-					$princat[$v["category"]] = $v["category"];
-				}
-			}
 		}
 		#Список файлов в шаблоне сайта
 		$body = "/plugins/product/product_add_edit.tpl";
