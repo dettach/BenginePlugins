@@ -10,9 +10,9 @@ if(empty($_SESSION["id"]))
 	} else {
 		header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
 	}
-	$header = "/templates/".$cfg["template"]."/".$cfg["header"];
-	$body   = "/templates/".$cfg["template"]."/".$cfg["error404"];
-	$footer = "/templates/".$cfg["template"]."/".$cfg["footer"];
+	$header = "/template/".$cfg["header"];
+	$body   = "/template/".$cfg["error404"];
+	$footer = "/template/".$cfg["footer"];
 	$page["title"] = "404 Not Found";
 	
 }
@@ -214,7 +214,7 @@ else
 					$result = 1;
 				}
 			}
-			$body = "/templates/".$cfg["template"]."/pay.tpl";
+			$body = "/template/pay.tpl";
 		}
 	}
 }
