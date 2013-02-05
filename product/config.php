@@ -44,12 +44,6 @@ $plugin_column["product"][] = array(
 	"default" => ""
 );
 $plugin_column["product"][] = array(
-	"name" => "oldprice",
-	"type" => "varchar",
-	"title" => "Старая цена",
-	"default" => ""
-);
-$plugin_column["product"][] = array(
 	"name" => "text",
 	"type" => "text",
 	"title" => "Описание",
