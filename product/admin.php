@@ -63,7 +63,7 @@ if(isset($nodes[1]) and $nodes[1] == $pl)
 		}
 		# Навигация по плагину
 		if(isset($plugin_config["limit"]) and $plugin_config["limit"] != 0) {	
-			$nav = donav($plugin_config["limit"], "product", $p);
+			$nav = donav($plugin_config["limit"], "product", false, $p);
 			$navigation = "LIMIT ".$nav["start"].",".$nav["num"];
 		} else {
 			$navigation = "";
