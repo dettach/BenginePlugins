@@ -6,6 +6,9 @@ $plugin_config["name"] = "cart";
 $plugin_config["title"] = "Корзина";
 $plugin_config["extend"] = 1;
 $plugin_config["cache"] = 0;
+
+$plugin_array["from_mail"] = $cfg["email"];
+$plugin_array["msg_cart"] = "[i]. [title] - [count] шт по [price] руб. за шт <br />";
 	
 /* 
  * user - id пользователя

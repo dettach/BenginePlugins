@@ -8,16 +8,7 @@ if( !defined("BENGINE") ) { die ("Hacking!"); }
  * element - id элемента в каталоге
  * count [0..99] - количество выбранных элементов
  * old [0 or 1] - уже купленный ранее, попадает в историю заказов
- * payment - метод оплаты
  * price - стоимость одного элемента
- *
- * API добавления в корзину: 
-	$.post('/', { 
-		cart: 'add', // прописываем вариант работы с товаром в корзине add, unadd, delete, price
-		id: id // id товара
-	}, function(data){
-		alert(data);
-	});
 */
 
 if(isset($_POST["cart"]) and $_POST["cart"] != "" and !empty($_POST["id"]) and (int)$_POST["id"] > 0)
@@ -83,16 +74,18 @@ if(isset($_POST["cart"]) and $_POST["cart"] != "" and !empty($_POST["id"]) and (
 		#Проверяем, возможно уже этот товар присутствует в БД
 		$sql = doquery("SELECT * FROM `cart` WHERE ".$user." and `element`='".$id."' and `old`='0' LIMIT 1");
 		if(dorows($sql) > 0) {
-			if(doquery("UPDATE `cart` SET `count`=`count`-1,`datetime`='".DATETIME."',`price`='".$price."' WHERE ".$user." and `element`='".$id."' and `old`='0' LIMIT 1")) {
-				die("1");
-			} else {
-				die("0");
+			$row = doassoc($sql);
+			if($row["count"] > 1) {
+				if(doquery("UPDATE `cart` SET `count`=`count`-1,`datetime`='".DATETIME."',`price`='".$price."' WHERE ".$user." and `element`='".$id."' and `old`='0' LIMIT 1")) {
+					die("1");
+				}
 			}
+			die("0");
 		}
 	}
 
 	#Удаление
-	elseif($_POST["cart"] == "cart")
+	elseif($_POST["cart"] == "delete")
 	{
 		if(doquery("DELETE FROM `cart` WHERE ".$user." and `element`='".$id."' and `old`='0' LIMIT 1")) {
 			die("1");
@@ -108,7 +101,7 @@ if(isset($_POST["cart"]) and $_POST["cart"] != "" and !empty($_POST["id"]) and (
 		die("".$die."");
 	}
 
-	#Подсчет общей стоимости
+	# Подсчет общей стоимости
 	elseif($_POST["cart"] == "price")
 	{
 		$sql = doquery("SELECT `count`, `price` FROM `cart` WHERE ".$user." and `old`='0' ORDER BY id DESC ");
@@ -121,30 +114,106 @@ if(isset($_POST["cart"]) and $_POST["cart"] != "" and !empty($_POST["id"]) and (
 		}
 		die("".$die."");
 	}
+	
 	# Ошибка запроса
 	else {
 		die("0");
 	}
 }
 
-#Просмотр содержимого корзины, манипуляция с данными, оформление заказа
-if(!empty($_SESSION["id"]))
+###########################################################################################################################
+
+#Просмотр всех товаров в корзине
+function cart()
 {
-	#Просмотр всех товаров в корзине
+	# Если пользователь не авторизован, то работаем с ID сессии
+	if(!isset($_SESSION["id"])) {
+		$user = "t1.session='".session_id()."'";
+	} else {
+		$user = "t1.user='".$_SESSION["id"]."'";
+	}
 	$sql = doquery("
 	SELECT
-		t1.id,t1.user,t1.element,t1.count,t2.title,t2.price,t2.id AS id_element,t2.category,t2.articul
+		t1.id,t1.user,t1.session,t1.datetime,t1.count,t1.price,
+		t2.title,t2.id AS product_id,t2.price AS product_price,t2.category AS product_category
 	FROM
-		cart AS t1 INNER JOIN product AS t2 ON (t2.id = t1.element)
+		cart AS t1 INNER JOIN
+		product AS t2 ON (t2.id = t1.element)
 	WHERE
-		t1.user='".$_SESSION["id"]."' and t1.old = '0' and t1.count > 0
+		".$user." and
+		t1.old = '0' and
+		t1.count > 0
 	ORDER BY
 		t1.id DESC
 	");
 	if(dorows($sql) > 0) {
-		$content = doarray($sql);
+		$product = doarray($sql);
+	} else {
+		$product = array();
 	}
-	#mpr($content);
+	return $product;
+}
+
+#Просмотр ранее заказанных товаров, только для авторизованных пользователей
+function cart_old()
+{
+	if(!isset($_SESSION["id"])) {
+		return false;
+	} else {	
+		$sql = doquery("
+		SELECT
+			t1.id,t1.user,t1.session,t1.datetime,t1.count,t1.price,
+			t2.title,t2.id AS product_id,t2.price AS product_price,t2.category AS product_category
+		FROM
+			cart AS t1 INNER JOIN
+			product AS t2 ON (t2.id = t1.element)
+		WHERE
+			t1.user = '".$_SESSION["id"]."' and
+			t1.old = '1' and
+			t1.count > 0
+		ORDER BY
+			t1.id DESC
+		");
+		if(dorows($sql) > 0) {
+			$product = doarray($sql);
+		} else {
+			$product = array();
+		}
+		return $product;
+	}
+}
+
+#Оформление заказа
+function cart_pay()
+{
+	global $cfg;
+	include_once(ROOT_DIR."/plugins/cart/config.php");
+	
+	# Список продуктов в корзине
+	$product = cart();
+	
+	# Формируем часть письма, в котором указаны товары 	
+	$i = 1;
+	$c = 0;
+	$cart = "";
+	
+	foreach($product as $key => $val) {
+		$in[] = "[i]";
+		$ou[] = $i;
+		foreach($val as $k => $v) {
+			$in[] = "[".$k."]";
+			$ou[] = $v;
+		}
+		$cart .= str_replace($in, $ou, $plugin_array["msg_cart"]);
+		$c = $c + ($val["price"] * $val["count"]);
+		unset($in);
+		unset($ou);
+		$i++;
+	}
+	
+	$msg["cart"] = $cart;
+	$msg["result"] = $c;
+}
 
 /*
 	#Оформление заказа
@@ -231,5 +300,4 @@ if(!empty($_SESSION["id"]))
 		$body = "/templates/pay.tpl";
 	}
 */
-}
 ?>

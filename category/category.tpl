@@ -30,12 +30,11 @@ function structure($parent, $level = 1)
 						<a href="/admin/category/add/'.$v["id"].'/"><img src="/system/template/img/addsmall.png" /></a>
 						<a href="/admin/category/edit/'.$v["id"].'/" title="Редактировать данные">'.$v["title"].'</a>
 					</td>
-					<td class="control">
-						<a href="/'.$v["id"].'/" target="_blank"><img src="/system/template/img/view.png" /></a>';
+					<td class="control">';
 						if(isset($v["child"]) and $v["child"] > 0) {
 							echo '<img src="/system/template/img/delete.png" style="opacity:0.5; cursor: default;" />';
 						} else {
-							echo '<a href="/admin/category/delete/'.$v["id"].'/"><img src="/system/template/img/delete.png" /></a>';
+							echo '<a href="/admin/category/delete/'.$v["id"].'/" onclick="return confirm(\'Вы уверенны, что хотите удалить категорию: '.$v["title"].'?\'); return false;"><img src="/system/template/img/delete.png" /></a>';
 						}
 					echo '<a href="/admin/category/edit/'.$v["id"].'/"><img src="/system/template/img/reply.png" /></a>
 					</td>
@@ -97,12 +96,11 @@ $(document).ready(function(){
 							<a href="/admin/category/add/'.$v["id"].'/"><img src="/system/template/img/addsmall.png" /></a>
 							<a href="/admin/category/edit/'.$v["id"].'/" title="Редактировать данные">'.$v["title"].'</a>
 						</td>
-						<td class="control">
-							<a href="/'.$v["id"].'/" target="_blank"><img src="/system/template/img/view.png" /></a>';
+						<td class="control">';
 							if(isset($v["child"]) and $v["child"] > 0) {
 								echo '<img src="/system/template/img/delete.png" style="opacity:0.5; cursor: default;" />';
 							} else {
-								echo '<a href="/admin/category/delete/'.$v["id"].'/"><img src="/system/template/img/delete.png" /></a>';
+								echo '<a href="/admin/category/delete/'.$v["id"].'/" onclick="return confirm(\'Вы уверенны, что хотите удалить категорию: '.$v["title"].'?\'); return false;"><img src="/system/template/img/delete.png" /></a>';
 							}
 						echo '<a href="/admin/category/edit/'.$v["id"].'/"><img src="/system/template/img/reply.png" /></a>
 						</td>

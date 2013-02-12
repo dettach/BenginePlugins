@@ -9,6 +9,9 @@ if(isset($nodes[1]) and (int)$nodes[1] > 0)
 	{
 		#Смотрим всю информацию о каталоге
 		$content = doassoc($sql);
+		$header = "/template/".$content["header"];
+		$body = "/template/".$content["body"];
+		$footer = "/template/".$content["footer"];
 		
 		#Возможно есть родительский каталог
 		if(!empty($content["parent"]) > 0) {
