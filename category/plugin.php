@@ -28,7 +28,7 @@ if(isset($nodes[1]) and (int)$nodes[1] > 0)
 		
 		# Навигация по элементам каталога
 		if(isset($plugin_config["limit"]) and $plugin_config["limit"] != 0) {	
-			$nav = donav($plugin_config["limit"], "category_elements", "`category`='".$content["id"]."'", $p);
+			$nav = donav($plugin_config["limit"], "product", "`category`='".$content["id"]."'", $p);
 			$navigation = "LIMIT ".$nav["start"].",".$nav["num"];
 		} else {
 			$navigation = "";
@@ -41,14 +41,14 @@ if(isset($nodes[1]) and (int)$nodes[1] > 0)
 		}
 		
 		#Список элементов каталога
-		$sql = doquery("SELECT * FROM category_elements WHERE category='".$content["id"]."' ORDER BY `".$order."` DESC ".$navigation);
+		$sql = doquery("SELECT * FROM product WHERE category='".$content["id"]."' ORDER BY `".$order."` DESC ".$navigation);
 		if(dorows($sql) > 0) {
-			$content["category_elements"] = doarray($sql);
+			$content["product"] = doarray($sql);
 		}
 		
 		#просмотр одного элемента
 		if(isset($nodes[2]) and (int)$nodes[2] > 0) {
-			$sql = doquery("SELECT * FROM category_elements WHERE category='".$nodes[1]."' and id='".$nodes[2]."' LIMIT 1");
+			$sql = doquery("SELECT * FROM product WHERE category='".$nodes[1]."' and id='".$nodes[2]."' LIMIT 1");
 			if(dorows($sql) > 0) {
 				$content["elements"] = doassoc($sql);
 			}
