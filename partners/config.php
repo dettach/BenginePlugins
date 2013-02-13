@@ -13,22 +13,22 @@ $plugin_config["body"] = "partners.tpl";
 $plugin_column["partners"][] = array(
 	"name" => "image",
 	"type" => "varchar",
-	"attributes" => "",
-	"null" => "NOT NULL",
-	"default" => "",
 	"title" => "Изображение",
-	"visible" => 0,
+	"default" => "",
+	"filebrowser" => 1
+);
+$plugin_column["partners"][] = array(
+	"name" => "link",
+	"type" => "varchar",
+	"title" => "Сайт",
+	"default" => "",
 	"filebrowser" => 1
 );
 $plugin_column["partners"][] = array(
 	"name" => "text",
 	"type" => "text",
-	"attributes" => "",
-	"null" => "NOT NULL",
-	"default" => "",
 	"title" => "Информация",
-	"visible" => 0,
-	"filebrowser" => 0
+	"default" => ""
 );
 	
 ?>

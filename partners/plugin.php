@@ -3,7 +3,7 @@ if( !defined("BENGINE") ) { die ("Hacking!"); }
 
 # Смотрим конкретную запись в таблице, по уникальному id
 if(isset($nodes[1]) and (int)$nodes[1] > 0) {
-	$sql = doquery("SELECT * FROM ".$pl." WHERE page='".$page["id"]."' and id='".$nodes[1]."' LIMIT 1");
+	$sql = doquery("SELECT * FROM ".$pl." WHERE id='".$nodes[1]."' LIMIT 1");
 	if(dorows($sql)== 1) {
 		$content = doassoc($sql);
 		# Стандартные шаблоны для плагина берез из его конфигурации
