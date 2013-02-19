@@ -6,44 +6,29 @@ if(isset($_SESSION["admin"]) and $_SESSION["admin"] == true)
 	#Запрос на добавление блока
 	if(isset($nodes[2]) and $nodes[2] == "add" and !isset($nodes[3]) and isset($_POST["submit"]) and count($_POST["submit"]) > 0)
 	{
-		$_POST["title"] = bengine_chars($_POST["title"]);
-		$_POST["text"] = bengine_chars_mysql(trim($_POST["text"]));
-		
-		if(add_post("action", $_POST) != true) {
-			die("При добавлении блока возникла ошибка");
+		if(add("action", $_POST)) {
+			cacheAdd("action");
+			header("Location: /admin/action/");
 		}
-		
-		if(!cacheAdd("action")){
-			die("Ошибка создания кэша. Обновите кэш в панели управления плагином.");
-		}
-		header("Location: /admin/action/");
-		die();
+		die("При добавлении блока возникла ошибка");
 	}
 
-	#Запрос на редактирование новости
+	#Запрос на редактирование блока
 	elseif(isset($nodes[2]) and $nodes[2] == "edit" and isset($nodes[3]) and (int)$nodes[3] > 0 and isset($_POST["submit"]) and count($_POST["submit"]) > 0)
 	{
-		$_POST["title"] = bengine_chars($_POST["title"]);
-		$_POST["text"] = bengine_chars_mysql(trim($_POST["text"]));
-		
-		if(edit_post("action", $_POST, $nodes[3]) != true) {
+		if(edit("action", $_POST, $nodes[3])) {
+			cacheAdd("action");
+			header("Location: /admin/action/edit/".$nodes[3]."/");
 			die("При редактировании блока возникли ошибки");
 		}
-		
-		if(!cacheAdd("action")){
-			die("Ошибка создания кэша. Обновите кэш в панели управления плагином.");
-		}
-		header("Location: /admin/action/edit/".$nodes[3]."/");
-		die();
+		die("При редактировании блока возникла ошибка");
 	}
 
 	#Запрос на редактирование новости
 	elseif(isset($nodes[2]) and $nodes[2] == "delete" and isset($nodes[3]) and (int)$nodes[3] > 0)
 	{
 		if(doquery("DELETE FROM `action` WHERE id=".$nodes[3]." LIMIT 1")) {	
-			if(!cacheAdd("action")){
-				die("Ошибка создания кэша. Обновите кэш в панели управления плагином.");
-			}
+			cacheAdd("action");
 			header("Location: /admin/action/");
 			die();
 		}
