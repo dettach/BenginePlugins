@@ -29,7 +29,7 @@ $plugin_config["reg_mail"] = 1;
 $plugin_config["reg_title"] = "Регистрации на сайте";
 
 #Текст письма
-$plugin_config["reg_text"] = "Спасибо за регистрацию на сайте.\r\nВаш логин: {login}\r\nВаш пароль: {passw}\r\n";
+$plugin_config["reg_text"] = "Спасибо за регистрацию на сайте.<br /><br />Ваш логин: {login}<br />Ваш пароль: {passw}";
 
 #Письмо о восстановлен
 $plugin_config["lost_mail"] = 1;
@@ -38,5 +38,5 @@ $plugin_config["lost_mail"] = 1;
 $plugin_config["lost_title"] = "Восстановление пароля на сайте";
 
 #Текст письма
-$plugin_config["lost_text"] = "Ваш логин: {login}\r\nВаш новый пароль: {passw}";
+$plugin_config["lost_text"] = "Восстановление пароля на сайте.<br /><br />Ваш логин: {login}<br />Ваш новый пароль: {passw}<br /><br />Пройдите авторизацию на сайте <a href=\"http://bengine.ru/login/\">http://bengine.ru/login/</a> и измените пароль в личном кабинете";
 ?>
