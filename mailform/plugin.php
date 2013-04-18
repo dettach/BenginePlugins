@@ -10,7 +10,7 @@ if(isset($_POST["submit"]) and count($_POST) > 1)
 	foreach($_POST as $k => $v)
 	{
 		$msgIn[] = "[".$k."]";
-		$msgOu[] =  htmlspecialchars(trim($v), ENT_QUOTES, "UTF-8");
+		$msgOu[] =  encode($v);
 	}
 	
 	# Формируем и заменяем

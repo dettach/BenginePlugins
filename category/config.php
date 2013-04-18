@@ -10,7 +10,7 @@ $plugin_config["limit"] = 0;
 $plugin_config["sort"] = "order";
 $plugin_config["order"] = false;
 $plugin_config["header"] = "header.tpl";
-$plugin_config["body"] = "example.tpl";
+$plugin_config["body"] = "category.tpl";
 $plugin_config["footer"] = "footer.tpl";
 
 #Разделы магазина разбитые на каталоги

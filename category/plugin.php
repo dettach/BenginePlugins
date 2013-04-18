@@ -1,6 +1,8 @@
 <?php
 if(!defined("BENGINE")) {die ("Hacking!");}
 
+include_once(ROOT_DIR."/plugins/category/arrays.php");
+
 if(isset($nodes[1]) and (int)$nodes[1] > 0)
 {
 	#Зашли в каталог и смотрим его подкаталоги и элементы
@@ -9,9 +11,6 @@ if(isset($nodes[1]) and (int)$nodes[1] > 0)
 	{
 		#Смотрим всю информацию о каталоге
 		$content = doassoc($sql);
-		$header = "/template/".$content["header"];
-		$body = "/template/".$content["body"];
-		$footer = "/template/".$content["footer"];
 		
 		#Возможно есть родительский каталог
 		if(!empty($content["parent"]) > 0) {
@@ -23,9 +22,24 @@ if(isset($nodes[1]) and (int)$nodes[1] > 0)
 		
 		#Список подкаталогов
 		if(!empty($content["child"]) > 0) {
-			$sql = doquery("SELECT * FROM category WHERE parent='".$content["id"]."' ORDER BY `order`");
+			$sql = doquery("SELECT * FROM category WHERE parent='".$content["id"]."' ORDER BY title");
 			if(dorows($sql) > 0) {
 				$content["category_child"] = doarray($sql);
+				#если нет картинки, оставляем пустую строку
+				foreach($content["category_child"] as $k => $v) {
+					$v["image"] = str_replace("%20"," ",$v["image"]);
+					if(file_exists(ROOT_DIR.$v["image"]) === false) {
+						$content["category_child"][$k]["image"] = "";
+					} else {
+						#ищем маленькую превьюшку
+						$tmp_small_image = explode("/",$v["image"]);
+						$pref_small_image = end($tmp_small_image);
+						$small_image = str_replace($pref_small_image,"small_".$pref_small_image,$v["image"]);
+						if(file_exists(ROOT_DIR.$small_image) !== false) {
+							$content["category_child"][$k]["small_image"] = $small_image;
+						}
+					}
+				}
 			}
 		}
 		
@@ -44,16 +58,31 @@ if(isset($nodes[1]) and (int)$nodes[1] > 0)
 		}
 		
 		#Список элементов каталога
-		$sql = doquery("SELECT * FROM product WHERE category='".$content["id"]."' ORDER BY `".$order."` DESC ".$navigation);
+		$sql = doquery("SELECT * FROM product WHERE category='".$content["id"]."' ORDER BY title ");
 		if(dorows($sql) > 0) {
 			$content["product"] = doarray($sql);
+			#если нет картинки, оставляем пустую строку
+			foreach($content["product"] as $k => $v) {
+				$v["image"] = str_replace("%20"," ",$v["image"]);
+				if(file_exists(ROOT_DIR.$v["image"]) === false) {
+					$content["product"][$k]["image"] = "";
+				} else {
+					#ищем маленькую превьюшку
+					$tmp_small_image = explode("/",$v["image"]);
+					$pref_small_image = end($tmp_small_image);
+					$small_image = str_replace($pref_small_image,"small_".$pref_small_image,$v["image"]);
+					if(file_exists(ROOT_DIR.$small_image) !== false) {
+						$content["product"][$k]["small_image"] = $small_image;
+					}
+				}
+			}
 		}
 		
 		#просмотр одного элемента
 		if(isset($nodes[2]) and (int)$nodes[2] > 0) {
-			$sql = doquery("SELECT * FROM product WHERE category='".$nodes[1]."' and id='".$nodes[2]."' LIMIT 1");
+			$sql = doquery("SELECT * FROM product WHERE id='".$nodes[2]."' LIMIT 1");
 			if(dorows($sql) > 0) {
-				$content["elements"] = doassoc($sql);
+				$content["element"] = doassoc($sql);
 			}
 		}
 	}

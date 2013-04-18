@@ -30,28 +30,98 @@ $(function(){
 		<br class="seo" />
 		
 		<?php
+			$contentTmp = $content;
+			
 			# Смотрим  поля, которые были заданы в конфигурации
-			if(!empty($plugin_column["product"]))
+			if(!empty($plugin_column[$pl]))
 			{
-				foreach($plugin_column["product"] as $v)
+				foreach($plugin_column[$pl] as $v)
 				{
 					# Смотрим данные БД
-					if(isset($content[$v["name"]])) {
-						$column_content = $content[$v["name"]];
+					if(isset($contentTmp[$v["name"]])) {
+						$column_content = $contentTmp[$v["name"]];
 					} else {
 						$column_content = "";
 					}
+					#####################################################
 					# Текст
 					if($v["type"] == "text" or $v["type"] == "longtext") {
 						echo '<label>'.$v["title"].': <br /><a class="btn" href="javascript:;" onclick="tinymce.execCommand(\'mceToggleEditor\',false,\''.$v["name"].'\');"><span>Отключить TinyMCE</span></a></label> <div style="float: left; width: 80%;"><textarea name="'.$v["name"].'" style="width: 100%; height: 300px;">'.$column_content.'</textarea></div><br /><br />';
+						echo '
+						';
 					}
+					#####################################################
 					# Дата и время
 					elseif($v["type"] == "datetime" or $v["type"] == "date") {
 						if(empty($column_content)) {
-							$column_content = DATETIME;
+							isset($v["default"]) ? $column_content = $v["default"] : $column_content = DATETIME;
 						}
 						echo '<label>'.$v["title"].':</label> <input type="text" name="'.$v["name"].'" id="'.$v["name"].'" value="'.$column_content.'" maxlength="250" />';
+						echo '
+						';
 					}
+					#####################################################
+					# Выпадающий список
+					elseif($v["type"] == "select")
+					{
+						echo '<label>'.$v["title"].':</label>';
+						
+						# выпадающий список тянем из БД
+						if(isset($v["selectname"]) and !is_array($v["selectname"]))
+						{
+							# кэшируем данные
+							if(file_exists(ROOT_DIR."/plugins/".$v["selectname"]."/plugin.php")) {
+								include_once(ROOT_DIR."/plugins/".$v["selectname"]."/plugin.php");
+								if(empty($plugin_config)) {
+									$plugin_config = array();
+								}
+							}
+							if(($select_cache = cacheGet($v["selectname"])) == false) {
+								$select_cache = cacheAdd($v["selectname"],$plugin_config);
+							}
+							#выводим на экран 
+							echo '<select name="'.$v["name"].'">';
+							echo '<option value="0"></option>';
+							if(is_array($select_cache))
+							{
+								foreach($select_cache as $sk => $sv) {
+									(!empty($v["selectkey"])) ? $sk = $sv[$v["selectkey"]] : $sk = $sv["id"];
+									(!empty($v["selecttitle"])) ? $sv = $sv[$v["selecttitle"]] : $sv = $sv["title"];
+									if($column_content == $sk) {
+										echo '<option value="'.$sk.'" selected="selected">'.$sv.'</option>';
+									} else {
+										echo '<option value="'.$sk.'">'.$sv.'</option>';
+									}
+								}
+							}
+							echo '</select><br />';
+							echo '
+							';
+						}
+						# выпадающий список уже сформирован в массиве
+						else
+						{
+							echo '<select name="'.$v["name"].'">';
+							echo '<option value=""></option>';
+							if(isset($v["selectname"]) and is_array($v["selectname"]))
+							{
+								foreach($v["selectname"] as $sk => $sv) {
+									if(isset($v["selecttitle"]) and isset($sv[$v["selecttitle"]])) {
+										$sv = $sv[$v["selecttitle"]];
+									}
+									if($column_content != '' and $column_content == $sk) {
+										echo '<option value="'.$sk.'" selected="selected">'.$sv.'</option>';
+									} else {
+										echo '<option value="'.$sk.'">'.$sv.'</option>';
+									}
+								}
+							}
+							echo '</select><br />';
+							echo '
+							';
+						}
+					}
+					#####################################################
 					# Флажок
 					elseif($v["type"] == "checkbox") {
 						$checked = '';
@@ -66,64 +136,34 @@ $(function(){
 						}
 						echo '<input type="hidden" name="'.$v["name"].'" value="0" />';
 						echo '<label>'.$v["title"].':</label> <input type="checkbox" name="'.$v["name"].'" id="'.$v["name"].'" value="1" '.$checked.' />';
+						echo '
+						';
 					}
-					# Выпадающий список
-					elseif($v["type"] == "select") {
-						echo '<label>'.$v["title"].':</label>';
-						if(isset($v["selectname"])) {
-							if(cacheGet($v["selectname"]) == false) {
-								cacheAdd($v["selectname"]);
-							}
-							$select_cache = cacheGet($v["selectname"]);
-							echo '<select name="'.$v["name"].'">';
-							echo '<option value=""></option>';
-							if(is_array($select_cache))
-							{
-								if(!is_numeric($v["default"])) {
-									foreach($select_cache as $sk => $sv) {
-										if(isset($v["selecttitle"])) { $sv["title"] = $sv[$v["selecttitle"]]; }
-										if($column_content != '' and $column_content == $sv["title"]) {
-											echo '<option value="'.$sv[$v["default"]].'" selected="selected">'.$sv[$v["default"]].'</option>';
-										} else {
-											echo '<option value="'.$sv[$v["default"]].'">'.$sv[$v["default"]].'</option>';
-										}
-									}
-								} else {
-									foreach($select_cache as $sk => $sv) {
-										if(isset($v["selecttitle"])) { $sv["title"] = $sv[$v["selecttitle"]]; }
-										if($column_content != '' and $column_content == $sv["id"]) {
-											echo '<option value="'.$sv["id"].'" selected="selected">'.$sv["title"].'</option>';
-										} else {
-											echo '<option value="'.$sv["id"].'">'.$sv["title"].'</option>';
-										}
-									}
-								}
-							} else {
-								echo '<option value="'.$v["default"].'"></option>';
-							}
-							echo '</select><br />';
-						}
-					}
+					#####################################################
 					# Строка
 					else {
-						if($v["name"] != "category") {
-							if(isset($v["defaultvar"]) and $v["defaultvar"] != "" and $column_content == "") {
-								$column_content = $v["defaultvar"];
-							}
-							echo '<label>'.$v["title"].':</label> <input type="text" name="'.$v["name"].'" id="'.$v["name"].'" value="'.$column_content.'" maxlength="250" />';
-							if(isset($v["filebrowser"]) and $v["filebrowser"] == 1) {
-								echo '<a href="#" onclick="elFinderBrowser(\''.$v["name"].'\', \''.$column_content.'\', \'images\', window);"><img src="/system/template/img/view.png" class="addImg"></a>';
-							}
-							echo '<br />';
+						if(isset($v["default"]) and $v["default"] != "" and $column_content == "") {
+							$column_content = $v["default"];
 						}
+						echo '<label>'.$v["title"].':</label> <input type="text" name="'.$v["name"].'" id="'.$v["name"].'" value="'.$column_content.'" maxlength="250" />';
+						if(isset($v["filebrowser"]) and $v["filebrowser"] == 1) {
+							echo '<a href="#" onclick="elFinderBrowser(\''.$v["name"].'\', \''.$column_content.'\', \'images\', window);"><img src="/system/template/img/view.png" class="addImg"></a>';
+						}
+						echo '<br />';
+						echo '
+						';
 					}
 				}
 			}
+			
+			unset($contentTmp);
 		?>
+		
 		<input type="hidden" name="header" value="<?php echo $plugin_config["header"]; ?>">
 		<input type="hidden" name="body" value="<?php echo $plugin_config["body"]; ?>">
 		<input type="hidden" name="footer" value="<?php echo $plugin_config["footer"]; ?>">
 		<input type="hidden" name="datetime" value="<?php echo DATETIME; ?>">	
+		
 	</fieldset>
 	
 	<input type="submit" name="submit" class="button" value="Сохранить данные">

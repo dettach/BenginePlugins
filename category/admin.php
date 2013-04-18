@@ -63,10 +63,13 @@ if(isset($nodes[1]) and $nodes[1] == $pl)
 	}
 	
 	#Сворачиваем/разворачиваем подстраницы
-	elseif(isset($nodes[2]) and $nodes[2] == "showchild" and isset($nodes[3]) and (int)$nodes[3] > 0 and isset($nodes[4]) and (int)$nodes[4] >= 0)
-	{
-		if(doquery("UPDATE `".$pl."` SET `showchild`='".$nodes[4]."' WHERE id=".$nodes[3]." LIMIT 1")) {
-			header("Location: /admin/".$pl."/"); die();
+	elseif(isset($nodes[2]) and $nodes[2] == "showchild" and isset($nodes[3]) and (int)$nodes[3] > 0)
+	{	
+		if(!isset($nodes[4])) {
+			$nodes[4] = 0;
+		}
+		if(doquery("UPDATE `category` SET `showchild`='".$nodes[4]."' WHERE id=".$nodes[3]." LIMIT 1")) {
+			header("Location: /admin/category/"); die();
 		} else {
 			die("Ошибка работы с дочерними страницами");
 		}

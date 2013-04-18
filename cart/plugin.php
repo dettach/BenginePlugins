@@ -1,5 +1,8 @@
 <?php
 if( !defined("BENGINE") ) { die ("Hacking!"); }
+
+include_once(ROOT_DIR."/plugins/category/arrays.php");
+$smarty->assign("plugin_array",$plugin_array);
 	
 /* 
  * user - id пользователя
@@ -11,35 +14,39 @@ if( !defined("BENGINE") ) { die ("Hacking!"); }
  * price - стоимость одного элемента
 */
 
-if(isset($_POST["cart"]) and $_POST["cart"] != "" and !empty($_POST["id"]) and (int)$_POST["id"] > 0)
+if(isset($_POST["cart"]) and $_POST["cart"] != "")
 {
 	###################################################################
 	# Если пользователь не авторизован, то работаем с ID сессии
-	if(!isset($_SESSION["id"])) {
-		$user = "`session`='".session_id()."'";
-		$into_user = '0';
-		$into_session = session_id();
-	} else {
-		$user = "`user`='".$_SESSION["id"]."'";
-		$into_user = $_SESSION["id"];
-		$into_session = '';
-	}
-	
+		if(!isset($_SESSION["id"])) {
+			$user = "`session`='".session_id()."'";
+			$into_user = '0';
+			$into_session = session_id();
+		} else {
+			$user = "`user`='".$_SESSION["id"]."'";
+			$into_user = $_SESSION["id"];
+			$into_session = '';
+		}
+	#
+	###################################################################
 	# ID элемента или товара
-	$id = (int)$_POST["id"];	
-	
-	# Информация о продукте
-	$sql = doquery("SELECT * FROM `product` WHERE id=".$id." LIMIT 1");
-	$product = doassoc($sql);
-	
-	# стоимость одной единицы товара
-	$price = (float)$product["price"];
-	
+		if(!empty($_POST["id"]) and (int)$_POST["id"] > 0) {
+			$id = (int)$_POST["id"];	
+		} else {
+			$id = 0;
+		}
+	#
 	###################################################################
 	
 	#Добавление в корзину, увеличение на единицу
-	if($_POST["cart"] == "add")
-	{		
+	if($_POST["cart"] == "add" and $id > 0)
+	{
+		# Информация о продукте
+		$sql = doquery("SELECT * FROM `product` WHERE id=".$id." LIMIT 1");
+		$product = doassoc($sql);
+		# стоимость одной единицы товара
+		$price = (float)$product["price"];
+	
 		#Проверяем, возможно уже этот товар присутствует в БД
 		$sql = doquery("SELECT * FROM `cart` WHERE ".$user." and `element`='".$id."' and `old`='0' LIMIT 1");
 		if(dorows($sql) > 0) {
@@ -69,8 +76,14 @@ if(isset($_POST["cart"]) and $_POST["cart"] != "" and !empty($_POST["id"]) and (
 	}
 
 	#Уменьшение на единицу
-	elseif($_POST["cart"] == "unadd")
-	{		
+	elseif($_POST["cart"] == "unadd" and $id > 0)
+	{
+		# Информация о продукте
+		$sql = doquery("SELECT * FROM `product` WHERE id=".$id." LIMIT 1");
+		$product = doassoc($sql);
+		# стоимость одной единицы товара
+		$price = (float)$product["price"];
+		
 		#Проверяем, возможно уже этот товар присутствует в БД
 		$sql = doquery("SELECT * FROM `cart` WHERE ".$user." and `element`='".$id."' and `old`='0' LIMIT 1");
 		if(dorows($sql) > 0) {
@@ -85,7 +98,7 @@ if(isset($_POST["cart"]) and $_POST["cart"] != "" and !empty($_POST["id"]) and (
 	}
 
 	#Удаление
-	elseif($_POST["cart"] == "delete")
+	elseif($_POST["cart"] == "delete" and $id > 0)
 	{
 		if(doquery("DELETE FROM `cart` WHERE ".$user." and `element`='".$id."' and `old`='0' LIMIT 1")) {
 			die("1");
@@ -100,6 +113,14 @@ if(isset($_POST["cart"]) and $_POST["cart"] != "" and !empty($_POST["id"]) and (
 		$die = docount("cart", $user." and `old`='0'");
 		die("".$die."");
 	}
+	
+	# Подсчет количества элементов в корзине	
+	elseif($_POST["cart"] == "countId" and $id > 0)
+	{
+		$sql = doquery("SELECT * FROM `cart` WHERE ".$user." and `element`='".$id."' and `old`='0' LIMIT 1");
+		$row = doassoc($sql);
+		die("".$row["count"]."");
+	}
 
 	# Подсчет общей стоимости
 	elseif($_POST["cart"] == "price")
@@ -109,7 +130,9 @@ if(isset($_POST["cart"]) and $_POST["cart"] != "" and !empty($_POST["id"]) and (
 		if(dorows($sql) > 0) {
 			$result = doarray($sql);
 			foreach($result as $v) {
-				$die = $die + ($v["count"] * $v["price"]);
+				if((int)$v["price"] > 0) {
+					$die = $die + ($v["count"] * $v["price"]);
+				}
 			}
 		}
 		die("".$die."");
@@ -135,7 +158,7 @@ function cart()
 	$sql = doquery("
 	SELECT
 		t1.id,t1.user,t1.session,t1.datetime,t1.count,t1.price,
-		t2.title,t2.id AS product_id,t2.price AS product_price,t2.category AS product_category
+		t2.title,t2.id AS product_id,t2.price AS product_price,t2.category AS product_category,t2.image AS product_image,t2.zachto AS product_zachto
 	FROM
 		cart AS t1 INNER JOIN
 		product AS t2 ON (t2.id = t1.element)
@@ -147,7 +170,14 @@ function cart()
 		t1.id DESC
 	");
 	if(dorows($sql) > 0) {
-		$product = doarray($sql);
+		$productTmp = doarray($sql);
+		foreach($productTmp as $k => $v) {
+			$product[$v["product_id"]] = $v;
+			$v["product_image"] = str_replace("%20"," ",$v["product_image"]);
+			if(file_exists(ROOT_DIR.$v["product_image"]) === false) {
+				$product[$v["product_id"]]["product_image"] = "";
+			}
+		}
 	} else {
 		$product = array();
 	}
@@ -175,7 +205,7 @@ function cart_old()
 			t1.id DESC
 		");
 		if(dorows($sql) > 0) {
-			$product = doarray($sql);
+			$productTmp = doarray($sql);
 		} else {
 			$product = array();
 		}

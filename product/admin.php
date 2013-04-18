@@ -10,6 +10,7 @@ if(isset($nodes[1]) and $nodes[1] == $pl)
 	#Добавление элементa каталога
 	if(isset($nodes[2]) and $nodes[2] == "add" and !isset($nodes[3]))
 	{
+		$templates = bengine_files(ROOT_DIR."/template/");
 		if(isset($_POST["submit"])) 
 		{
 			add("product", $_POST);
@@ -24,6 +25,7 @@ if(isset($nodes[1]) and $nodes[1] == $pl)
 	#Редактирование элементa каталога
 	elseif(isset($nodes[2]) and $nodes[2] == "edit" and isset($nodes[3]) and (int)$nodes[3] > 0)
 	{
+		$templates = bengine_files(ROOT_DIR."/template/");
 		# Отправка в БД
 		if(isset($_POST["submit"]))
 		{

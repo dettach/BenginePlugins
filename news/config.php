@@ -6,9 +6,8 @@ $plugin_config["name"] = "news";
 $plugin_config["title"] = "Новости";
 $plugin_config["extend"] = 0;
 $plugin_config["cache"] = 1;
-$plugin_config["limit"] = 20;
+$plugin_config["limit"] = 10;
 $plugin_config["order"] = true;
-$plugin_config["sort"] = "order";
 $plugin_config["body"] = "news.tpl";
 
 $plugin_column["news"][] = array(
