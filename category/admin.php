@@ -20,7 +20,7 @@ if(isset($nodes[1]) and $nodes[1] == $pl)
 			} else {
 				$parent = 0;
 			}
-			add($pl, $_POST, "parent='".$parent."'");
+			add($pl, $_POST, false, $parent);
 			if(isset($plugin_config["cache"]) and $plugin_config["cache"] == 1) {
 				cacheAdd($pl,$plugin_config);
 			}
